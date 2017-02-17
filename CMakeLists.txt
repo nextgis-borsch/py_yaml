@@ -105,6 +105,19 @@ list(GET PACKAGE_DETAILS 1 VERSION)
 include(util)
 report_version(${PROJECT_NAME} ${VERSION})
 
+include(FindAnyProject)
+find_anyproject(YAML REQUIRED)
+set(BUILD_INCLUDES "-I${YAML_INCLUDE_DIR}")
+get_filename_component(LIB_DIR ${YAML_INCLUDE_DIR} DIRECTORY)
+if(OSX_FRAMEWORK)
+    set(BUILD_INCLUDES ${BUILD_INCLUDES} "-L${LIB_DIR}" )
+    set(FLAGS "ARCHFLAGS=-arch x86_64")
+    set(YAML_FRAMEWORK yaml)
+    get_filename_component(YAML_FRAMEWORK_DIRS ${LIB_DIR} DIRECTORY)
+else()
+    set(BUILD_INCLUDES ${BUILD_INCLUDES} "-L${LIB_DIR}/lib")
+endif()
+
 # Download tarbal
 set(OUT_DIR_NAME ${PROJECT_NAME}-${VERSION})
 set(OUT_NAME "${OUT_DIR_NAME}.tar.gz")
@@ -124,11 +137,13 @@ endif()
 
 macro(build_py ver)
     add_custom_target(build_py${ver} ALL
-        COMMAND ${PYTHON${ver}_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}/setup.py build_ext -b ${CMAKE_CURRENT_BINARY_DIR}/${PYTHON${ver}_VERSION_MAJOR}.${PYTHON${ver}_VERSION_MINOR}/site-packages
+        COMMAND ${CMAKE_COMMAND} -E env "${FLAGS}"
+        ${PYTHON${ver}_EXECUTABLE} setup.py build_ext ${BUILD_INCLUDES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}
         VERBATIM
     )
 endmacro()
+configure_file(${CMAKE_SOURCE_DIR}/cmake/setup.py.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}/setup.py IMMEDIATE @ONLY)
 
 # python setup.py install --prefix=/usr/local
 status_message("Install")
@@ -143,11 +158,11 @@ endif()
 
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(SETUP_OPTS "${SETUP_OPTS} --single-version-externally-managed --record=rekord.txt --prefix=${CMAKE_INSTALL_PREFIX}")
+    set(SETUP_OPTS "${SETUP_OPTS} --record=rekord.txt --prefix=${CMAKE_INSTALL_PREFIX}")
 
     macro(install_mac_py ver)
         install(CODE "execute_process(
-            COMMAND ${PYTHON${ver}_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}/setup.py install ${SETUP_OPTS}
+            COMMAND ${CMAKE_COMMAND} -E env \"${FLAGS}\" ${PYTHON${ver}_EXECUTABLE} setup.py install ${SETUP_OPTS}
             WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}
             )")
     endmacro()

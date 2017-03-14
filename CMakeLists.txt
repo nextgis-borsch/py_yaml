@@ -114,6 +114,9 @@ if(OSX_FRAMEWORK)
     set(FLAGS "ARCHFLAGS=-arch x86_64")
     set(YAML_FRAMEWORK yaml)
     get_filename_component(YAML_FRAMEWORK_DIRS ${LIB_DIR} DIRECTORY)
+elseif(WIN32)
+    set(FLAGS ${FLAGS} "VS90COMNTOOLS=$ENV{VS120COMNTOOLS}")
+    set(BUILD_INCLUDES ${BUILD_INCLUDES} "-L${LIB_DIR}/lib")
 else()
     set(BUILD_INCLUDES ${BUILD_INCLUDES} "-L${LIB_DIR}/lib")
 endif()
@@ -227,11 +230,14 @@ except ImportError:
         install_py(3)
     endif()
 else()
+    set(SETUP_OPTS "${SETUP_OPTS} --record=rekord.txt --prefix=${CMAKE_INSTALL_PREFIX}")
+    string(REPLACE "/" "\\\\" SETUP_OPTS ${SETUP_OPTS})
     macro(install_win_py ver)
-        set(BINDING_PATH ${CMAKE_CURRENT_BINARY_DIR}/${PYTHON${ver}_VERSION_MAJOR}.${PYTHON${ver}_VERSION_MINOR}/site-packages)
-        install(DIRECTORY "${BINDING_PATH}/"
-                DESTINATION ${INSTALL_LIB_DIR}/Python${PYTHON${ver}_VERSION_MAJOR}${PYTHON${ver}_VERSION_MINOR}/site-packages
-                COMPONENT libraries)
+        message(">>> ${PYTHON${ver}_EXECUTABLE} setup.py install ${SETUP_OPTS}")
+        install(CODE "execute_process(
+            COMMAND ${PYTHON${ver}_EXECUTABLE} setup.py install ${SETUP_OPTS}
+            WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}
+            )")
     endmacro()
 
     if(PYTHON2_EXECUTABLE)

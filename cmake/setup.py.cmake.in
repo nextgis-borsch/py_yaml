@@ -321,6 +321,7 @@ if __name__ == '__main__':
         extra_link_args.append('@YAML_FRAMEWORK@')
         extra_link_args.append('-rpath')
         extra_link_args.append('@loader_path/../../../../Frameworks/')
+        extra_link_args.append('-mmacosx-version-min=@CMAKE_OSX_DEPLOYMENT_TARGET@')
     else:
         libraries = ['yaml']
 

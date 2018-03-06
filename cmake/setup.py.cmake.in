@@ -56,9 +56,8 @@ int main(void) {
 
 import sys, os.path, platform
 
-from setuptools import setup
 from distutils import log
-from distutils.core import Command #setup, 
+from distutils.core import setup, Command
 from distutils.core import Distribution as _Distribution
 from distutils.core import Extension as _Extension
 from distutils.dir_util import mkpath

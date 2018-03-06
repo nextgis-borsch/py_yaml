@@ -136,15 +136,15 @@ elseif(WIN32)
         set(FLAGS ${FLAGS} "VS90COMNTOOLS=$ENV{VS120COMNTOOLS}")
     elseif(MSVC_VERSION EQUAL 1900)
         set(FLAGS ${FLAGS} "VS90COMNTOOLS=$ENV{VS140COMNTOOLS}")
-    else() # 1912
+    else() # 1912 - Need to copy vcvarsall.bat from VC\Auxiliary\Build to VC
         get_filename_component(_COMNTOOLS_PREFIX "${CMAKE_C_COMPILER}" PATH)
         get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
         get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
         get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
         get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
         get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
-        get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
-        set(FLAGS ${FLAGS} "VS90COMNTOOLS=${_COMNTOOLS_PREFIX}/Auxiliary/Build")
+        # get_filename_component(_COMNTOOLS_PREFIX "${_COMNTOOLS_PREFIX}" PATH)
+        set(FLAGS ${FLAGS} "VS90COMNTOOLS=${_COMNTOOLS_PREFIX}")
     endif()
 endif()
 
@@ -176,6 +176,7 @@ macro(build_py ver)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}
         VERBATIM
     )
+    add_dependencies(build_py${ver} ${YAML_LIBRARIES})
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(SETUP_OPTS ${SETUP_OPTS} --record=rekord.txt --prefix=${CMAKE_CURRENT_BINARY_DIR}/inst_tmp)

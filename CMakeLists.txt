@@ -50,7 +50,7 @@ if(OSX_FRAMEWORK)
     set(INSTALL_LIB_DIR "Library" CACHE INTERNAL "Installation directory for libraries" FORCE)
     set(CMAKE_MACOSX_RPATH ON)
 else()
-    set(INSTALL_LIB_DIR "" CACHE INTERNAL "Installation directory for libraries" FORCE)
+    set(INSTALL_LIB_DIR "." CACHE INTERNAL "Installation directory for libraries" FORCE)
 endif()
 
 if(NOT WITH_PYTHON2 AND NOT WITH_PYTHON3)

@@ -201,7 +201,7 @@ class build_ext(_build_ext):
         for ext in self.extensions:
             with_ext = self.distribution.ext_status(ext)
             if with_ext is None:
-                with_ext = True #self.check_extension_availability(ext)
+                with_ext = self.check_extension_availability(ext)
             if not with_ext:
                 continue
             if with_cython:

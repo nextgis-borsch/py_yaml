@@ -179,10 +179,10 @@ macro(build_py ver)
     add_dependencies(build_py${ver} ${YAML_LIBRARIES})
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        set(SETUP_OPTS ${SETUP_OPTS} --record=rekord.txt --prefix=${CMAKE_CURRENT_BINARY_DIR}/inst_tmp)
+        set(SETUP_OPTS ${SETUP_OPTS} --no-compile --record=rekord.txt --prefix=${CMAKE_CURRENT_BINARY_DIR}/inst_tmp)
     elseif(WIN32)
         string(REPLACE "/" "\\\\" TMP_PATH "${CMAKE_CURRENT_BINARY_DIR}/inst_tmp")
-        set(SETUP_OPTS ${SETUP_OPTS} --record=rekord.txt --prefix=${TMP_PATH})
+        set(SETUP_OPTS ${SETUP_OPTS} --no-compile --record=rekord.txt --prefix=${TMP_PATH})
     else()
         execute_process ( COMMAND ${PYTHON${ver}_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" OUTPUT_VARIABLE PY_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -194,7 +194,7 @@ except ImportError:
 
         execute_process ( COMMAND ${PYTHON${ver}_EXECUTABLE} -c ${TEST_CMD} OUTPUT_VARIABLE PY_HAVE_SETUPTOOLS OUTPUT_STRIP_TRAILING_WHITESPACE)
         if(PY_HAVE_SETUPTOOLS)
-            set(SETUP_OPTS "${SETUP_OPTS} --single-version-externally-managed --record=rekord.txt")
+            set(SETUP_OPTS "${SETUP_OPTS} --no-compile --record=rekord.txt")
         endif()
 
         string( LENGTH "$ENV{DESTDIR}" DESTDIRLEN )

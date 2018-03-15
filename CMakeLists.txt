@@ -1,5 +1,5 @@
 ################################################################################
-# Project:  Lib Psycopg
+# Project:  Lib yaml
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nexgis.com
 ################################################################################

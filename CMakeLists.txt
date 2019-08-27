@@ -100,6 +100,7 @@ endif()
 
 file(DOWNLOAD "https://pypi.python.org/pypi/${PROJECT_NAME}/json" "${CMAKE_CURRENT_BINARY_DIR}/meta.json")
 
+set(PACKAGE_NAME ${PROJECT_NAME})
 include(util)
 get_compiler_version(COMPILER)
 # get version and download url
@@ -240,7 +241,6 @@ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
 endif()
 
 # Archiving ====================================================================
-set(PACKAGE_NAME ${PROJECT_NAME})
 
 set(CPACK_PACKAGE_NAME "${PACKAGE_NAME}")
 set(CPACK_PACKAGE_VENDOR "${PACKAGE_VENDOR}")

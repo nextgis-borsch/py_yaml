@@ -237,7 +237,12 @@ if(PYTHON3_EXECUTABLE)
 endif()
 
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/inst_tmp/ DESTINATION ${INSTALL_LIB_DIR})
+    if(WIN32)
+        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME}/build/lib.win-amd64-${PYTHON3_VERSION_MAJOR}.${PYTHON3_VERSION_MINOR}/yaml
+                DESTINATION ${INSTALL_LIB_DIR}/lib/site-packages)
+    else()
+        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/inst_tmp/ DESTINATION ${INSTALL_LIB_DIR})
+    endif()
 endif()
 
 # Archiving ====================================================================
